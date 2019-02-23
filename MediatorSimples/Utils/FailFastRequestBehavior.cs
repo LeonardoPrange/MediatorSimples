@@ -9,39 +9,40 @@ using MediatR;
 
 namespace MediatorSimples.Utils
 {
-    public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse> where TResponse : Response
+    public class FailFastRequestBehavior<TRequisicao, TResposta> 
+    : IPipelineBehavior<TRequisicao, TResposta> where TRequisicao 
+    : IRequest<TResposta> where TResposta : Resposta
     {
         private readonly IEnumerable<IValidator> _validators;
 
-        public FailFastRequestBehavior(IEnumerable<IValidator<TRequest>> validators)
+        public FailFastRequestBehavior(IEnumerable<IValidator<TRequisicao>> validators)
         {
             _validators = validators;
         }
 
-        public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public Task<TResposta> Handle(TRequisicao requisicao, CancellationToken cancellationToken, RequestHandlerDelegate<TResposta> next)
         {
-            var failures = _validators
-                .Select(v => v.Validate(request))
+            var falhas = _validators
+                .Select(v => v.Validate(requisicao))
                 .SelectMany(result => result.Errors)
                 .Where(f => f != null)
                 .ToList();
 
-            return failures.Any()
-                ? Errors(failures)
+            return falhas.Any()
+                ? Errors(falhas)
                 : next();
         }
 
-        private static Task<TResponse> Errors(IEnumerable<ValidationFailure> failures)
+        private static Task<TResposta> Errors(IEnumerable<ValidationFailure> falhas)
         {
-            var response = new Response();
+            var resposta = new Resposta();
 
-            foreach (var failure in failures)
+            foreach (var falha in falhas)
             {
-                response.AddError(failure.ErrorMessage);
+                resposta.AdicionaErros(falha.ErrorMessage);
             }
 
-            return Task.FromResult(response as TResponse);
+            return Task.FromResult(resposta as TResposta);
         }
     }
 }

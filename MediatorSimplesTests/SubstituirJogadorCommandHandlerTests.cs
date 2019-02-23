@@ -22,21 +22,19 @@ namespace MediatorSimples.Tests
         public async void Handle_DeveSubstituirLeonardoPorMarcel()
         {
             var tecnico = new Tecnico("Antonio");
-            var jogadorParaSair = tecnico.Time.FirstOrDefault(j => j.Nome == "Leonardo");
-            var jogadorParaEntrar = tecnico.Time.FirstOrDefault(j => j.Nome == "Marcel");
-            var quartoArbitro = new QuartoArbitro("Ivan");
-            
+
             var command = new SubstituirJogadorCommand(
                 tecnico, 
-                jogadorParaSair, 
-                jogadorParaEntrar, 
-                quartoArbitro
+                tecnico.Time.FirstOrDefault(j => j.Nome == "Leonardo"), 
+                tecnico.Time.FirstOrDefault(j => j.Nome == "Marcel"), 
+                new QuartoArbitro("Ivan")
             );
-            
+
             var commandHandler = new SubstituirJogadorCommandHandler();
-            var resposta = await commandHandler.Handle(command, new CancellationToken());
-            
-            resposta.Should().Be($"Entra: {jogadorParaEntrar.Numero} - Sai: {jogadorParaSair.Numero}");
+
+            var time = await commandHandler.Handle(command, new CancellationToken());
+            time.FirstOrDefault(j => j.Nome == "Marcel").EstaEmCampo.Should().BeTrue();
+            time.FirstOrDefault(j => j.Nome == "Leonardo").EstaEmCampo.Should().BeFalse();
         }
     }
 }

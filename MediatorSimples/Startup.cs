@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace MediatorSimples
 {
@@ -30,7 +31,21 @@ namespace MediatorSimples
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            //ConfigureFailFast(services);
+            services.AddMediatR();
+            services.AddSwaggerGen(options =>
+                options.SwaggerDoc("beta",
+                    new Info
+                    {
+                        Title = "Exemplo de Mediator",
+                        Version = "beta",
+
+                        Contact = new Contact
+                        {
+                            Name = "Leonardo Prange"
+                        }
+                    })
+            );
+            ConfigureFailFast(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,16 +62,23 @@ namespace MediatorSimples
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(setup =>
+            {
+                setup.RoutePrefix = "swagger";
+                setup.SwaggerEndpoint("/swagger/beta/swagger.json", "Exemplo de mediator");
+            });
         }
-        // public void ConfigureFailFast(IServiceCollection services)
-        // {
-        //     var applicationAssemblyName = Assembly.GetEntryAssembly().GetName().Name;
-        //     var assembly = AppDomain.CurrentDomain.Load(applicationAssemblyName);
-        //     AssemblyScanner
-        //         .FindValidatorsInAssembly(assembly)
-        //         .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
-        //     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(FailFastRequestBehavior<,>));
-        // }
+
+        public void ConfigureFailFast(IServiceCollection services)
+        {
+            var applicationAssemblyName = Assembly.GetEntryAssembly().GetName().Name;
+            var assembly = AppDomain.CurrentDomain.Load(applicationAssemblyName);
+            AssemblyScanner
+                .FindValidatorsInAssembly(assembly)
+                .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(FailFastRequestBehavior<,>));
+        }
     }
 
 

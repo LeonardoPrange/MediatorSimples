@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using MediatorSimples.Domain;
+using MediatorSimples.Utils;
 using MediatR;
 
 namespace MediatorSimples.Application
 {
-    public class SubstituirJogadorCommand: IRequest<string>
+    public class SubstituirJogadorCommand: IRequest<IEnumerable<Jogador>>
     {
         public Tecnico Tecnico { get; private set; }
         public Jogador JogadorEmCampo { get; private set; }

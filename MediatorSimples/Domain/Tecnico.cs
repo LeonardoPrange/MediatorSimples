@@ -16,11 +16,8 @@ namespace MediatorSimples.Domain
             Time = EscalaTime();
         }
 
-        public void SubstituiJogador(Jogador JogadorEmCampo, Jogador JogadorNoBanco)
-        {
-            JogadorEmCampo.SaiDeCampo();
-            JogadorNoBanco.EntraEmCampo();
-        }
+        public string PedeSubstituicao(string nomeJogadorEntra, string nomeJogadorSai)
+        => $"QUERO SUBSTITUI O {nomeJogadorEntra} PELO {nomeJogadorSai}";
 
         private IEnumerable<Jogador> EscalaTime()
         {

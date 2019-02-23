@@ -4,23 +4,22 @@ using System.Linq;
 
 namespace MediatorSimples.Utils
 {
-    public class Response<TResult>
+    public class Resposta<TResultado>
     {
-        private readonly IList<string> _messages = new List<string>();
-
-        public IEnumerable<string> Errors { get; }
-        public TResult Result { get; }
-        public Response() => Errors = new ReadOnlyCollection<string>(_messages);
-        public bool HasErrors => Errors.Any();
-        public Response(TResult result) : this () => Result = result;
-        public virtual Response<TResult> AddError(string message)
+        private readonly IList<string> _mensagens = new List<string>();
+        public IEnumerable<string> Erros { get; }
+        public TResultado Resultado { get; }
+        public Resposta() => Erros = new ReadOnlyCollection<string>(_mensagens);
+        public bool PossuiErros => Erros.Any();
+        public Resposta(TResultado resultado) : this () => Resultado = resultado;
+        public virtual Resposta<TResultado> AdicionaErros(string message)
         {
-            _messages.Add(message);
+            _mensagens.Add(message);
             return this;
         }
     }
 
-    public class Response: Response<object>
+    public class Resposta: Resposta<object>
     {
         
     }
