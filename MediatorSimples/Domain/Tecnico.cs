@@ -27,9 +27,9 @@ namespace MediatorSimples.Domain
             string[] nomes = new string[14] {"Leonardo", "Pedro", "Marco", 
             "Juliano", "Rô", "Portuga", "Luis", "Leandro", "Antonio", "Romulo", 
             "Peralta", "Pedro Legacy", "Marcel", "Gabriel"};
-            for (int i = 1; i <= nomes.Length; i++)
+            for (int i = 0; i < nomes.Length; i++)
             {
-                if(i <= 11)
+                if(i <= 11)     
                     yield return new Jogador(nomes[i], i, true);
                 else
                     yield return new Jogador(nomes[i], i, false);       

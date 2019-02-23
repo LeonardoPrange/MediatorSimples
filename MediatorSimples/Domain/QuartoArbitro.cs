@@ -7,6 +7,12 @@ namespace MediatorSimples.Domain
         public Guid ID { get; private set; }
         public string Nome { get; private set; }
 
+        public QuartoArbitro(string nome)
+        {
+            ID = Guid.NewGuid();
+            Nome = nome;
+        }
+
         public string LevantaPlaca(int numeroEntra, int numeroSai)
         => $"Entra: {numeroEntra} - Sai: {numeroSai}";     
     }

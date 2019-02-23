@@ -30,7 +30,7 @@ namespace MediatorSimples
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            ConfigureFailFast(services);
+            //ConfigureFailFast(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,19 +48,15 @@ namespace MediatorSimples
             app.UseHttpsRedirection();
             app.UseMvc();
         }
-        public void ConfigureFailFast(IServiceCollection services)
-        {
-
-            var applicationAssemblyName = Assembly.GetEntryAssembly().GetName().Name;
-
-            var assembly = AppDomain.CurrentDomain.Load(applicationAssemblyName);
-
-            AssemblyScanner
-                .FindValidatorsInAssembly(assembly)
-                .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
-            
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(FailFastRequestBehavior<,>));
-        }
+        // public void ConfigureFailFast(IServiceCollection services)
+        // {
+        //     var applicationAssemblyName = Assembly.GetEntryAssembly().GetName().Name;
+        //     var assembly = AppDomain.CurrentDomain.Load(applicationAssemblyName);
+        //     AssemblyScanner
+        //         .FindValidatorsInAssembly(assembly)
+        //         .ForEach(result => services.AddScoped(result.InterfaceType, result.ValidatorType));
+        //     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(FailFastRequestBehavior<,>));
+        // }
     }
 
 
